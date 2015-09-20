@@ -9,5 +9,6 @@
     <string name="time_string">Time</string>
     <string name="action_OK">OK</string>
     <string name="action_add">+</string>
+    <string name="set">Set</string>
 
 </resources>
