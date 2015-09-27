@@ -13,11 +13,11 @@ import java.util.ArrayList;
 /**
  * Created by dima on 17.09.15.
  */
-public class ItemAdapter extends ArrayAdapter<ListViewItem> {
+public class ItemAdapter extends ArrayAdapter<Place> {
     private final Context context;
-    private final ArrayList<ListViewItem> listViewItems;
+    private final ArrayList<Place> listViewItems;
 
-    public ItemAdapter(Context context, ArrayList<ListViewItem> listViewItem) {
+    public ItemAdapter(Context context, ArrayList<Place> listViewItem) {
         super(context, R.layout.item_list_layout, listViewItem);
         this.context = context;
         this.listViewItems = listViewItem;

@@ -14,14 +14,19 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private ItemAdapter adapter;
-    private static ArrayList<ListViewItem> items = new ArrayList<>();
+    private static ArrayList<Place> items = new ArrayList<>();
     private static final int ADD_REQUEST = 1;
     private static final String TAG = "MainActivity";
+    private DataBaseOpenHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        db = new DataBaseOpenHelper(this);
+
+        items = db.getAllPlaces();
 
         adapter = new ItemAdapter(this, items);
 
@@ -56,7 +61,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_REQUEST && resultCode == RESULT_OK) {
-            String place = data.getStringExtra("place");
+            String address = data.getStringExtra("address");
+            if (address == null)
+                address = "No address";
             String date = data.getStringExtra("date");
             String time = data.getStringExtra("time");
             Bitmap bmp = null;
@@ -69,7 +76,11 @@ public class MainActivity extends AppCompatActivity {
             if (bmp == null)
                 bmp = BitmapFactory.decodeResource(getResources(), R.drawable.noimage);
 
-            adapter.add(new ListViewItem(bmp, place, date, time));
+            Place place = new Place(bmp, address, date, time);
+            db.addPlace(place);
+            items.add(place);
+
+            adapter.notifyDataSetChanged();
         }
     }
 }

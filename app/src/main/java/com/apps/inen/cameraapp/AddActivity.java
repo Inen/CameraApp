@@ -106,14 +106,14 @@ public class AddActivity extends AppCompatActivity {
 
     private void returnTheResult() {
         Intent intent = new Intent();
-        EditText place = (EditText) findViewById(R.id.placeEdit);
+        EditText address = (EditText) findViewById(R.id.addressEdit);
         TextView date = (TextView) findViewById(R.id.dateView);
         TextView time = (TextView) findViewById(R.id.timeView);
 
         if (icon != null)
             intent.putExtra("icon", icon);
-        if (!place.getText().toString().isEmpty())
-            intent.putExtra("place", place.getText().toString());
+        if (!address.getText().toString().isEmpty())
+            intent.putExtra("address", address.getText().toString());
         if (!date.getText().toString().isEmpty())
             intent.putExtra("date", date.getText().toString());
         if (!time.getText().toString().isEmpty())
