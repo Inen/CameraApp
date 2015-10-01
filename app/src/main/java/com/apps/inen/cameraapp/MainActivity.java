@@ -8,7 +8,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -16,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private ItemAdapter adapter;
     private static ArrayList<Place> items = new ArrayList<>();
     private static final int ADD_REQUEST = 1;
+    private static final int DELETE_REQUEST = 2;
     private static final String TAG = "MainActivity";
     private DataBaseOpenHelper db;
 
@@ -32,6 +36,15 @@ public class MainActivity extends AppCompatActivity {
 
         ListView view = (ListView) findViewById(R.id.listView);
         view.setAdapter(adapter);
+        view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(TAG, "Clicked item with pos:" + position + " id:" + id);
+                Intent intent = new Intent(MainActivity.this, PlaceViewActivity.class);
+                intent.putExtra("ID", position);
+                startActivityForResult(intent, DELETE_REQUEST);
+            }
+        });
     }
 
     @Override
@@ -81,6 +94,14 @@ public class MainActivity extends AppCompatActivity {
             items.add(place);
 
             adapter.notifyDataSetChanged();
+        } else if (requestCode == DELETE_REQUEST && resultCode == RESULT_OK) {
+            int id = data.getIntExtra("ID", -1);
+            if (id >= -1)
+            {
+                db.deletePlace(items.get(id));
+                items.remove(id);
+                adapter.notifyDataSetChanged();
+            }
         }
     }
 }

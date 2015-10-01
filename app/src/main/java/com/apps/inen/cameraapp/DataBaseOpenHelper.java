@@ -52,7 +52,7 @@ public class DataBaseOpenHelper extends SQLiteOpenHelper{
 
         // 2. create ContentValues to add key "column"/value
         ContentValues values = new ContentValues();
-        values.put(place.KEY_PLACE, place.getPlace());
+        values.put(place.KEY_PLACE, place.getAddress());
         values.put(place.KEY_TIME, place.getTime());
         values.put(place.KEY_DATE, place.getDate());
         values.put(place.KEY_IMAGE, Util.bitmapToByteArray(place.getBitmap()));
@@ -65,6 +65,34 @@ public class DataBaseOpenHelper extends SQLiteOpenHelper{
     }
 
     public Place getPlace(int id) {
+//        // 1. get reference to readable DB
+//        SQLiteDatabase db = this.getReadableDatabase();
+//
+//        // 2. build query
+//        Cursor cursor = db.query(Place.TABLE_NAME, // a. table
+//                Place.COLUMNS, // b. column names
+//                " id = ?", // c. selections
+//                new String[]{String.valueOf(id)}, // d. selections args
+//                null, // e. group by - how to group rows
+//                null, // f. having - which row groups to include (filter)
+//                null, // g. order by
+//                null); // h. limit
+//
+//        // 3. if we got results get the first one
+//        if (cursor != null)
+//            cursor.moveToFirst();
+//
+//        // 4. build place object
+//        Place place = new Place();
+//        place.setId(Integer.parseInt(cursor.getString(0)));
+//        place.setPlace(cursor.getString(1));
+//        place.setTime(cursor.getString(2));
+//        place.setDate(cursor.getString(3));
+//        place.setBitmap(Util.byteArrayToBitmap(cursor.getBlob(4)));
+//
+//        Log.d("getPlace(" + id + ")", place.toString());
+//        return place;
+
         // 1. get reference to readable DB
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -82,7 +110,7 @@ public class DataBaseOpenHelper extends SQLiteOpenHelper{
         if (cursor != null)
             cursor.moveToFirst();
 
-        // 4. build place object
+        // 4. build ad object
         Place place = new Place();
         place.setId(Integer.parseInt(cursor.getString(0)));
         place.setPlace(cursor.getString(1));
@@ -90,7 +118,7 @@ public class DataBaseOpenHelper extends SQLiteOpenHelper{
         place.setDate(cursor.getString(3));
         place.setBitmap(Util.byteArrayToBitmap(cursor.getBlob(4)));
 
-        Log.d("getPlace(" + id + ")", place.toString());
+        Log.d("getAd(" + id + ")", place.toString());
         return place;
     }
 
@@ -128,7 +156,7 @@ public class DataBaseOpenHelper extends SQLiteOpenHelper{
 
         // 2. create ContentValues to add key "column"/value
         ContentValues values = new ContentValues();
-        values.put(place.KEY_PLACE, place.getPlace());
+        values.put(place.KEY_PLACE, place.getAddress());
         values.put(place.KEY_TIME, place.getTime());
         values.put(place.KEY_DATE, place.getDate());
         values.put(place.KEY_IMAGE, Util.bitmapToByteArray(place.getBitmap()));

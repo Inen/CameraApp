@@ -10,5 +10,7 @@
     <string name="action_OK">OK</string>
     <string name="action_add">+</string>
     <string name="set">Set</string>
+    <string name="title_activity_place_view">PlaceView</string>
+    <string name="action_delete">Delete</string>
 
 </resources>

@@ -35,7 +35,6 @@ public class AddActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
         imageView = (ImageView) findViewById(R.id.photoView);
-
         date = (TextView) findViewById(R.id.dateView);
         time = (TextView) findViewById(R.id.timeView);
 
@@ -159,7 +158,7 @@ public class AddActivity extends AppCompatActivity {
 
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            date.setText(dayOfMonth + "." + monthOfYear + "." + year);
+            date.setText(dayOfMonth + "." + (monthOfYear) + "." + year);
         }
     }
 }

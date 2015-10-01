@@ -34,7 +34,7 @@ public class ItemAdapter extends ArrayAdapter<Place> {
         TextView textView = (TextView) rowView.findViewById(R.id.listTextView);
 
         imageView.setImageBitmap(listViewItems.get(position).getBitmap());
-        textView.setText(listViewItems.get(position).getPlace() + "\n" +
+        textView.setText(listViewItems.get(position).getAddress() + "\n" +
                 listViewItems.get(position).getDate() + " at " + listViewItems.get(position).getTime());
         return rowView;
     }

@@ -21,7 +21,7 @@ public class Place {
 
 
     private Bitmap bitmap;
-    private String place;
+    private String address;
     private String date;
     private String time;
     private int id;
@@ -30,10 +30,10 @@ public class Place {
     {
     }
 
-    Place(Bitmap bitmap, String place, String date, String time)
+    Place(Bitmap bitmap, String address, String date, String time)
     {
         this.bitmap = bitmap;
-        this.place = place;
+        this.address = address;
         this.date = date;
         this.time = time;
     }
@@ -43,8 +43,8 @@ public class Place {
         return bitmap;
     }
 
-    public String getPlace() {
-        return place;
+    public String getAddress() {
+        return address;
     }
 
     public String getDate() {
@@ -63,8 +63,8 @@ public class Place {
         this.bitmap = bitmap;
     }
 
-    public void setPlace(String place) {
-        this.place = place;
+    public void setPlace(String address) {
+        this.address = address;
     }
 
     public void setDate(String date) {
