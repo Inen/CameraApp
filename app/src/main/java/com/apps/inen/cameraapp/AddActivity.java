@@ -6,6 +6,9 @@ import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,13 +22,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class AddActivity extends AppCompatActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 2;
     ImageView imageView;
-    private Bitmap icon;
+    private Bitmap photo;
+
+    String mCurrentPhotoPath;
 
     private static TextView date;
     private static TextView time;
@@ -39,12 +48,23 @@ public class AddActivity extends AppCompatActivity {
         time = (TextView) findViewById(R.id.timeView);
 
         final Calendar c = Calendar.getInstance();
-        int year = c.get(Calendar.YEAR);
-        int month = c.get(Calendar.MONTH);
-        int day = c.get(Calendar.DAY_OF_MONTH);
-
-        date.setText(c.get(Calendar.DAY_OF_MONTH) + "." + c.get(Calendar.MONTH) + "." + c.get(Calendar.YEAR));
+        date.setText(c.get(Calendar.DAY_OF_MONTH) + "." + (c.get(Calendar.MONTH) + 1) + "." + c.get(Calendar.YEAR));
         time.setText(c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE));
+
+        if(photo == null)
+            photo = BitmapFactory.decodeResource(getResources(), R.drawable.noimage);
+        if (savedInstanceState != null)
+        {
+            photo = Util.byteArrayToBitmap(savedInstanceState.getByteArray("photo"));
+        }
+        imageView.setImageBitmap(photo);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        if(photo != null)
+            outState.putByteArray("photo", Util.bitmapToByteArray(photo));
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -87,10 +107,58 @@ public class AddActivity extends AppCompatActivity {
         }
     }
 
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(null);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
+    }
+
+    private void setPhoto() {
+        // Get the dimensions of the View
+        int targetW = imageView.getWidth();
+        int targetH = imageView.getHeight();
+
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // Determine how much to scale down the image
+        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
+
+        photo = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+        imageView.setImageBitmap(photo);
+    }
+
     public void takeAPicture() {
         Intent intent = new Intent();
         intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
         if (intent.resolveActivity(getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException e)
+            {
+                //photoFile = new File();
+            }
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
             startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
         }
     }
@@ -98,8 +166,8 @@ public class AddActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            icon = data.getParcelableExtra("data");
-            imageView.setImageBitmap(icon);
+            photo = data.getParcelableExtra("data");
+            setPhoto();
         }
     }
 
@@ -109,8 +177,8 @@ public class AddActivity extends AppCompatActivity {
         TextView date = (TextView) findViewById(R.id.dateView);
         TextView time = (TextView) findViewById(R.id.timeView);
 
-        if (icon != null)
-            intent.putExtra("icon", icon);
+        if (photo != null)
+            intent.putExtra("photo", photo);
         if (!address.getText().toString().isEmpty())
             intent.putExtra("address", address.getText().toString());
         if (!date.getText().toString().isEmpty())
@@ -158,7 +226,7 @@ public class AddActivity extends AppCompatActivity {
 
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            date.setText(dayOfMonth + "." + (monthOfYear) + "." + year);
+            date.setText(dayOfMonth + "." + (monthOfYear + 1) + "." + year);
         }
     }
 }

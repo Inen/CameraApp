@@ -19,7 +19,6 @@ public class Place {
 
     public static final String[] COLUMNS = {KEY_ID, KEY_PLACE, KEY_TIME, KEY_DATE, KEY_IMAGE};
 
-
     private Bitmap bitmap;
     private String address;
     private String date;

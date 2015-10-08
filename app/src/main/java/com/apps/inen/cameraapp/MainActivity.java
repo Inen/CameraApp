@@ -2,7 +2,6 @@ package com.apps.inen.cameraapp;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -79,17 +78,14 @@ public class MainActivity extends AppCompatActivity {
                 address = "No address";
             String date = data.getStringExtra("date");
             String time = data.getStringExtra("time");
-            Bitmap bmp = null;
+            Bitmap photo = null;
             try {
-                bmp = data.getParcelableExtra("icon");
+                photo = data.getParcelableExtra("photo");
             } catch (NullPointerException e) {
                 Log.e(TAG, "bytearray is null");
             }
 
-            if (bmp == null)
-                bmp = BitmapFactory.decodeResource(getResources(), R.drawable.noimage);
-
-            Place place = new Place(bmp, address, date, time);
+            Place place = new Place(photo, address, date, time);
             db.addPlace(place);
             items.add(place);
 
