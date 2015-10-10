@@ -8,11 +8,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,13 +24,12 @@ import android.widget.TimePicker;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 public class AddActivity extends AppCompatActivity {
 
-    static final int REQUEST_IMAGE_CAPTURE = 2;
+    static final String TAG = "AddActivity";
+    static final int REQUEST_PHOTO_CAPTURE = 2;
     ImageView imageView;
     private Bitmap photo;
 
@@ -48,7 +47,8 @@ public class AddActivity extends AppCompatActivity {
         time = (TextView) findViewById(R.id.timeView);
 
         final Calendar c = Calendar.getInstance();
-        date.setText(c.get(Calendar.DAY_OF_MONTH) + "." + (c.get(Calendar.MONTH) + 1) + "." + c.get(Calendar.YEAR));
+        date.setText(c.get(Calendar.DAY_OF_MONTH) + "." + (c.get(Calendar.MONTH) + 1) +
+                "." + c.get(Calendar.YEAR));
         time.setText(c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE));
 
         if(photo == null)
@@ -76,12 +76,8 @@ public class AddActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_OK) {
             returnTheResult();
             return true;
@@ -107,67 +103,37 @@ public class AddActivity extends AppCompatActivity {
         }
     }
 
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(null);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
-        return image;
-    }
-
-    private void setPhoto() {
-        // Get the dimensions of the View
-        int targetW = imageView.getWidth();
-        int targetH = imageView.getHeight();
-
-        // Get the dimensions of the bitmap
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
-
-        photo = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-        imageView.setImageBitmap(photo);
+    File createPhotoFile() throws IOException {
+        File file = new File(getExternalFilesDir(null) + "/" + "photo_"
+                + System.currentTimeMillis() + ".jpg");
+        Log.d(TAG, "Photo file name: " + file.getAbsolutePath());
+        mCurrentPhotoPath = file.getAbsolutePath();
+        return file;
     }
 
     public void takeAPicture() {
-        Intent intent = new Intent();
-        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (intent.resolveActivity(getPackageManager()) != null) {
             File photoFile = null;
             try {
-                photoFile = createImageFile();
-            } catch (IOException e)
-            {
-                //photoFile = new File();
+                //photoFile = createPhotoFile();
+                photoFile = createPhotoFile();
+            } catch (IOException e) {
+                Log.e(TAG, e.getMessage());
             }
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+
+            if (photoFile != null) {
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                startActivityForResult(intent, REQUEST_PHOTO_CAPTURE);
+            }
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            photo = data.getParcelableExtra("data");
-            setPhoto();
+        if (requestCode == REQUEST_PHOTO_CAPTURE && resultCode == RESULT_OK) {
+            photo = BitmapFactory.decodeFile(mCurrentPhotoPath);
+            imageView.setImageBitmap(photo);
         }
     }
 
@@ -178,7 +144,7 @@ public class AddActivity extends AppCompatActivity {
         TextView time = (TextView) findViewById(R.id.timeView);
 
         if (photo != null)
-            intent.putExtra("photo", photo);
+            intent.putExtra("photoPath", mCurrentPhotoPath);
         if (!address.getText().toString().isEmpty())
             intent.putExtra("address", address.getText().toString());
         if (!date.getText().toString().isEmpty())

@@ -15,31 +15,28 @@ public class Place {
     public static final String KEY_PLACE = "place";
     public static final String KEY_TIME = "time";
     public static final String KEY_DATE = "date";
-    public static final String KEY_IMAGE = "image";
+    public static final String KEY_PHOTO_PATH = "photo_path";
 
-    public static final String[] COLUMNS = {KEY_ID, KEY_PLACE, KEY_TIME, KEY_DATE, KEY_IMAGE};
+    public static final String[] COLUMNS = {KEY_ID, KEY_PLACE, KEY_TIME, KEY_DATE, KEY_PHOTO_PATH};
 
-    private Bitmap bitmap;
+    private String photo_path;
     private String address;
     private String date;
     private String time;
     private int id;
 
-    Place()
-    {
+    Place() {
     }
 
-    Place(Bitmap bitmap, String address, String date, String time)
-    {
-        this.bitmap = bitmap;
+    Place(String address, String date, String time, String photo_path) {
+        this.photo_path = photo_path;
         this.address = address;
         this.date = date;
         this.time = time;
     }
 
-    public Bitmap getBitmap()
-    {
-        return bitmap;
+    public String getPhoto_path() {
+        return photo_path;
     }
 
     public String getAddress() {
@@ -58,8 +55,9 @@ public class Place {
         return id;
     }
 
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
+
+    public void setPhoto_path(String photo_path) {
+        this.photo_path = photo_path;
     }
 
     public void setPlace(String address) {

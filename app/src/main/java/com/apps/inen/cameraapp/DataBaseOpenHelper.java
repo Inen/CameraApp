@@ -12,14 +12,13 @@ import java.util.ArrayList;
 /**
  * Created by dima on 24.09.15.
  */
-public class DataBaseOpenHelper extends SQLiteOpenHelper{
+public class DataBaseOpenHelper extends SQLiteOpenHelper {
 
     private static int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "CameraAPP";
 
 
-    DataBaseOpenHelper(Context context)
-    {
+    DataBaseOpenHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -30,7 +29,7 @@ public class DataBaseOpenHelper extends SQLiteOpenHelper{
                 Place.KEY_PLACE + " TEXT, " +
                 Place.KEY_TIME + " TEXT, " +
                 Place.KEY_DATE + " TEXT, " +
-                Place.KEY_IMAGE + " BLOB )";
+                Place.KEY_PHOTO_PATH + " TEXT)";
 
         // create table
         db.execSQL(CREATE_PLACES_TABLE);
@@ -55,7 +54,7 @@ public class DataBaseOpenHelper extends SQLiteOpenHelper{
         values.put(place.KEY_PLACE, place.getAddress());
         values.put(place.KEY_TIME, place.getTime());
         values.put(place.KEY_DATE, place.getDate());
-        values.put(place.KEY_IMAGE, Util.bitmapToByteArray(place.getBitmap()));
+        values.put(place.KEY_PHOTO_PATH, place.getPhoto_path());
 
         // 3. insert
         db.insert(place.TABLE_NAME, null, values);
@@ -65,33 +64,6 @@ public class DataBaseOpenHelper extends SQLiteOpenHelper{
     }
 
     public Place getPlace(int id) {
-//        // 1. get reference to readable DB
-//        SQLiteDatabase db = this.getReadableDatabase();
-//
-//        // 2. build query
-//        Cursor cursor = db.query(Place.TABLE_NAME, // a. table
-//                Place.COLUMNS, // b. column names
-//                " id = ?", // c. selections
-//                new String[]{String.valueOf(id)}, // d. selections args
-//                null, // e. group by - how to group rows
-//                null, // f. having - which row groups to include (filter)
-//                null, // g. order by
-//                null); // h. limit
-//
-//        // 3. if we got results get the first one
-//        if (cursor != null)
-//            cursor.moveToFirst();
-//
-//        // 4. build place object
-//        Place place = new Place();
-//        place.setId(Integer.parseInt(cursor.getString(0)));
-//        place.setPlace(cursor.getString(1));
-//        place.setTime(cursor.getString(2));
-//        place.setDate(cursor.getString(3));
-//        place.setBitmap(Util.byteArrayToBitmap(cursor.getBlob(4)));
-//
-//        Log.d("getPlace(" + id + ")", place.toString());
-//        return place;
 
         // 1. get reference to readable DB
         SQLiteDatabase db = this.getReadableDatabase();
@@ -116,7 +88,7 @@ public class DataBaseOpenHelper extends SQLiteOpenHelper{
         place.setPlace(cursor.getString(1));
         place.setTime(cursor.getString(2));
         place.setDate(cursor.getString(3));
-        place.setBitmap(Util.byteArrayToBitmap(cursor.getBlob(4)));
+        place.setPhoto_path(cursor.getString(4));
 
         Log.d("getAd(" + id + ")", place.toString());
         return place;
@@ -141,7 +113,7 @@ public class DataBaseOpenHelper extends SQLiteOpenHelper{
                 place.setPlace(cursor.getString(1));
                 place.setTime(cursor.getString(2));
                 place.setDate(cursor.getString(3));
-                place.setBitmap(Util.byteArrayToBitmap(cursor.getBlob(4)));
+                place.setPhoto_path(cursor.getString(4));
                 places.add(place);
             } while (cursor.moveToNext());
         }
@@ -159,7 +131,7 @@ public class DataBaseOpenHelper extends SQLiteOpenHelper{
         values.put(place.KEY_PLACE, place.getAddress());
         values.put(place.KEY_TIME, place.getTime());
         values.put(place.KEY_DATE, place.getDate());
-        values.put(place.KEY_IMAGE, Util.bitmapToByteArray(place.getBitmap()));
+        values.put(place.KEY_PHOTO_PATH, place.getPhoto_path());
 
         // 3. updating row
         int i = db.update(place.TABLE_NAME, values, place.KEY_ID + " = ?",

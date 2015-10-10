@@ -1,6 +1,8 @@
 package com.apps.inen.cameraapp;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,9 +35,13 @@ public class ItemAdapter extends ArrayAdapter<Place> {
         ImageView imageView = (ImageView) rowView.findViewById(R.id.listImageView);
         TextView textView = (TextView) rowView.findViewById(R.id.listTextView);
 
-        imageView.setImageBitmap(listViewItems.get(position).getBitmap());
+        Bitmap photo = BitmapFactory.decodeFile(listViewItems.get(position).getPhoto_path());
+        imageView.setImageBitmap(photo);
+//        Util.setPic(imageView, listViewItems.get(position).getPhoto_path());
         textView.setText(listViewItems.get(position).getAddress() + "\n" +
                 listViewItems.get(position).getDate() + " at " + listViewItems.get(position).getTime());
+
         return rowView;
     }
+
 }

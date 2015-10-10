@@ -55,10 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+       int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_add) {
@@ -78,14 +75,9 @@ public class MainActivity extends AppCompatActivity {
                 address = "No address";
             String date = data.getStringExtra("date");
             String time = data.getStringExtra("time");
-            Bitmap photo = null;
-            try {
-                photo = data.getParcelableExtra("photo");
-            } catch (NullPointerException e) {
-                Log.e(TAG, "bytearray is null");
-            }
+            String photoPath = data.getStringExtra("photoPath");
 
-            Place place = new Place(photo, address, date, time);
+            Place place = new Place(address, date, time, photoPath);
             db.addPlace(place);
             items.add(place);
 

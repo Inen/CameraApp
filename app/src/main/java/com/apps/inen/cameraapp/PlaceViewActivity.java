@@ -1,6 +1,9 @@
 package com.apps.inen.cameraapp;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,12 +15,13 @@ import java.util.ArrayList;
 
 public class PlaceViewActivity extends AppCompatActivity {
 
-    ImageView photo;
+    ImageView photoView;
     TextView address;
     TextView dateAndTime;
     DataBaseOpenHelper db;
     int id;
     Place place;
+    Bitmap photo;
 
 
     @Override
@@ -25,7 +29,7 @@ public class PlaceViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place_view);
 
-        photo = (ImageView) findViewById(R.id.photoDisplay);
+        photoView = (ImageView) findViewById(R.id.photoDisplay);
         address = (TextView) findViewById(R.id.addressDisplay);
         dateAndTime = (TextView) findViewById(R.id.dateAndTimeDisplay);
 
@@ -34,10 +38,23 @@ public class PlaceViewActivity extends AppCompatActivity {
             db = new DataBaseOpenHelper(this);
             ArrayList<Place> list = db.getAllPlaces();
             place = list.get(id);
-            photo.setImageBitmap(place.getBitmap());
+            photo = BitmapFactory.decodeFile(place.getPhoto_path());
+            photoView.setImageBitmap(photo);
+            //photo = Util.setPic(photoView, place.getPhoto_path());
             address.setText(place.getAddress());
             dateAndTime.setText(place.getDate() + " at " + place.getTime());
         }
+        if (savedInstanceState != null)
+        {
+            photo = Util.byteArrayToBitmap(savedInstanceState.getByteArray("photo"));
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        if(photo != null)
+            outState.putByteArray("photo", Util.bitmapToByteArray(photo));
+        super.onSaveInstanceState(outState);
     }
 
     @Override
