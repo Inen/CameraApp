@@ -12,5 +12,7 @@
     <string name="set">Set</string>
     <string name="title_activity_place_view">PlaceView</string>
     <string name="action_delete">Delete</string>
+    <string name="title_activity_display_place">DisplayPlaceActivity</string>
+    <string name="title_activity_display_view">DisplayViewActivity</string>
 
 </resources>

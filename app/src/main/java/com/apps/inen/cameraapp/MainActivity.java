@@ -28,22 +28,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         db = new DataBaseOpenHelper(this);
-
         items = db.getAllPlaces();
 
         adapter = new ItemAdapter(this, items);
 
         ListView view = (ListView) findViewById(R.id.listView);
         view.setAdapter(adapter);
+
         view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(TAG, "Clicked item with pos:" + position + " id:" + id);
-                Intent intent = new Intent(MainActivity.this, PlaceViewActivity.class);
+                Intent intent = new Intent(MainActivity.this, DisplayPlaceActivity.class);
                 intent.putExtra("ID", position);
                 startActivityForResult(intent, DELETE_REQUEST);
             }
         });
+
     }
 
     @Override
@@ -80,16 +81,13 @@ public class MainActivity extends AppCompatActivity {
             Place place = new Place(address, date, time, photoPath);
             db.addPlace(place);
             items.add(place);
-
-            adapter.notifyDataSetChanged();
         } else if (requestCode == DELETE_REQUEST && resultCode == RESULT_OK) {
-            int id = data.getIntExtra("ID", -1);
-            if (id >= -1)
+            if (data.getBooleanExtra("isDataChanged", true))
             {
-                db.deletePlace(items.get(id));
-                items.remove(id);
-                adapter.notifyDataSetChanged();
+                items.clear();
+                items.addAll(db.getAllPlaces());
             }
         }
+        adapter.notifyDataSetChanged();
     }
 }
