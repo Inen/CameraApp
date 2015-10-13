@@ -55,7 +55,8 @@ public class AddActivity extends AppCompatActivity {
             photo = BitmapFactory.decodeResource(getResources(), R.drawable.noimage);
         if (savedInstanceState != null)
         {
-            photo = Util.byteArrayToBitmap(savedInstanceState.getByteArray("photo"));
+            mCurrentPhotoPath = savedInstanceState.getString("PhotoPath");
+            photo = Util.byteArrayToBitmap(savedInstanceState.getByteArray("Photo"));
         }
         imageView.setImageBitmap(photo);
     }
@@ -63,7 +64,9 @@ public class AddActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         if(photo != null)
-            outState.putByteArray("photo", Util.bitmapToByteArray(photo));
+            outState.putByteArray("Photo", Util.bitmapToByteArray(photo));
+        if(mCurrentPhotoPath != null)
+            outState.putString("PhotoPath", mCurrentPhotoPath);
         super.onSaveInstanceState(outState);
     }
 
