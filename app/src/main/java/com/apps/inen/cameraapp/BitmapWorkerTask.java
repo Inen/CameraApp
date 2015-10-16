@@ -33,9 +33,17 @@ class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
     @Override
     protected Bitmap doInBackground(String... params) {
         String mCurrentPhotoPath = params[0];
+
+        if (mCurrentPhotoPath == "ShowCameraImage")
+            return decodeSampledBitmapFromResource(mContext.getResources(),
+                    R.drawable.camera_image, reqWidth, reqHeight);
+
         if (mCurrentPhotoPath != null)
             return decodeSampledBitmapFromFile(mCurrentPhotoPath, reqWidth, reqHeight);
-        return decodeNoImageBitmap(mContext.getResources(), reqWidth, reqHeight);
+
+        return decodeSampledBitmapFromResource(mContext.getResources(),
+                R.drawable.noimage, reqWidth, reqHeight);
+
     }
 
     // Once complete, see if ImageView is still around and set bitmap.
@@ -69,12 +77,13 @@ class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
         return BitmapFactory.decodeFile(mCurrentFilePath, options);
     }
 
-    public static Bitmap decodeNoImageBitmap(Resources res, int targetW, int targetH) {
+    public static Bitmap decodeSampledBitmapFromResource(Resources res, int resID,
+                                                         int targetW, int targetH) {
 
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
-        BitmapFactory.decodeResource(res, R.drawable.noimage, options);
+        BitmapFactory.decodeResource(res, resID, options);
 
         int photoW = options.outWidth;
         int photoH = options.outHeight;
@@ -85,7 +94,8 @@ class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
         options.inSampleSize = scaleFactor;
-        return  BitmapFactory.decodeResource(res, R.drawable.noimage, options);
+        return BitmapFactory.decodeResource(res, resID, options);
     }
+
 
 }

@@ -8,9 +8,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
@@ -33,7 +33,7 @@ public class AddActivity extends AppCompatActivity {
     ImageView imageView;
     private Bitmap photo;
 
-    String mCurrentPhotoPath;
+    String mCurrentPhotoPath = "ShowCameraImage";
 
     private static TextView date;
     private static TextView time;
