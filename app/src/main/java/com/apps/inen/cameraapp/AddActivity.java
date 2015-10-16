@@ -51,14 +51,12 @@ public class AddActivity extends AppCompatActivity {
                 "." + c.get(Calendar.YEAR));
         time.setText(c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE));
 
-        if(photo == null)
-            photo = BitmapFactory.decodeResource(getResources(), R.drawable.noimage);
         if (savedInstanceState != null)
         {
             mCurrentPhotoPath = savedInstanceState.getString("PhotoPath");
-            photo = Util.byteArrayToBitmap(savedInstanceState.getByteArray("Photo"));
         }
-        imageView.setImageBitmap(photo);
+        BitmapWorkerTask task = new BitmapWorkerTask(imageView, this);
+        task.execute(mCurrentPhotoPath);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.apps.inen.cameraapp;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -8,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class DisplayPlaceActivity extends AppCompatActivity {
@@ -45,8 +48,7 @@ public class DisplayPlaceActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    private void returnResult()
-    {
+    private void returnResult() {
         Intent intent = new Intent();
         intent.putExtra("isDataChanged", isDataChanged);
         setResult(RESULT_OK, intent);
@@ -69,19 +71,56 @@ public class DisplayPlaceActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_delete) {
-            if(pager.getCurrentItem() >= 0 && places.size() > 0) {
-                Log.d(TAG, "Deleted place #" + pager.getCurrentItem());
-                db.deletePlace(places.remove(pager.getCurrentItem()));
-                adapter.notifyDataSetChanged();
-                isDataChanged = true;
+            if (pager.getCurrentItem() >= 0 && places.size() > 0) {
+                createAlertDialog();
                 return true;
-            } else
-            {
+            } else {
                 returnResult();
             }
             return false;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void deletePlace()
+    {
+        Log.d(TAG, "Deleted place #" + pager.getCurrentItem());
+        String path = places.get(pager.getCurrentItem()).getPhoto_path();
+        if (path != null) {
+            File file = new File(path);
+            if (file.delete()) {
+                Log.d(TAG, "File was deleted");
+            } else
+                Log.d(TAG, "File was not deleted!");
+        }
+        db.deletePlace(places.remove(pager.getCurrentItem()));
+        adapter.notifyDataSetChanged();
+        isDataChanged = true;
+    }
+
+    private void createAlertDialog()
+    {
+        final boolean result = false;
+        AlertDialog.Builder builder = new AlertDialog.Builder(DisplayPlaceActivity.this)
+                .setTitle(R.string.delete_warning)
+                .setIcon(R.drawable.icon_warning)
+                .setPositiveButton(R.string.action_OK,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                deletePlace();
+                            }
+                        })
+                .setNegativeButton(R.string.action_Cancel,
+                        new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                    }
+                });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }

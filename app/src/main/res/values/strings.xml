@@ -8,11 +8,15 @@
     <string name="date_string">Date</string>
     <string name="time_string">Time</string>
     <string name="action_OK">OK</string>
+    <string name="action_Cancel">Cancel</string>
     <string name="action_add">+</string>
     <string name="set">Set</string>
     <string name="title_activity_place_view">PlaceView</string>
     <string name="action_delete">Delete</string>
     <string name="title_activity_display_place">DisplayPlaceActivity</string>
     <string name="title_activity_display_view">DisplayViewActivity</string>
+
+    <string name="delete_warning">Delete the place?</string>
+
 
 </resources>

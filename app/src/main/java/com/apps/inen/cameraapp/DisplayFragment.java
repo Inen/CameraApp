@@ -38,13 +38,8 @@ public class DisplayFragment extends Fragment {
         dateAndTimeView.setText(args.getString("DateAndTime"));
         photoPath = args.getString("PhotoPath");
 
-
-
-        photo = BitmapFactory.decodeFile(photoPath);
-        if (photo == null)
-            photo = BitmapFactory.decodeResource(getResources(), R.drawable.noimage);
-
-        photoView.setImageBitmap(photo);
+        BitmapWorkerTask task = new BitmapWorkerTask(photoView, getActivity());
+        task.execute(photoPath);
 
         return rootView;
     }
