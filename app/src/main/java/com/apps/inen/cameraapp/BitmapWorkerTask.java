@@ -19,7 +19,7 @@ class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
     private int reqHeight = 150;
 
     public BitmapWorkerTask(ImageView imageView, Context context) {
-        // Use a WeakReference to ensure the ImageView can be garbage collect ed
+        // Use a WeakReference to ensure the ImageView can be garbage collected
         imageViewReference = new WeakReference<>(imageView);
         mContext = context;
         ImageView view = imageViewReference.get();
